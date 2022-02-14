@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 
 type ReturnTypes<T = any> = [T, (e: any) => void, Dispatch<SetStateAction<T>>];
 
