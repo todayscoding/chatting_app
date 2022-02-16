@@ -2,6 +2,7 @@ import useInput from '@hooks/useInput';
 import React, { useState, useCallback } from 'react';
 import axios from 'axios';
 import { Form, Error, Label, Input, LinkContainer, Button, Header, Success } from './styles';
+import { Link } from 'react-router-dom';
 
 const SignUp = () => {
 	const [email, onChangeEmail] = useInput('');
@@ -89,7 +90,7 @@ const SignUp = () => {
       </Form>
       <LinkContainer>
         이미 회원이신가요?&nbsp;
-        <a href="/login">로그인 하러가기</a>
+        <Link to="/login">로그인 하러가기</Link>
       </LinkContainer>
     </div>
 	);
