@@ -7,7 +7,9 @@ import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 
 const LogIn = () => {
-	const {data, error} = useSWR('/api/users', fetcher);
+	const {data, error, mutate} = useSWR('/api/users', fetcher, {
+		dedupingInterval: 10000000,
+	});
 	const [logInError, setLogInError] = useState(false);
 	const [email, onChangeEmail] = useInput('');
 	const [password, onChangePassword] = useInput('');
@@ -20,7 +22,7 @@ const LogIn = () => {
 	 // withCredentials: true,
 })
 			.then(() => {
-				
+				mutate(); 
 			})
 			.catch((error) => {
 				setLogInError(error.response?.data?.statusCode === 401);
