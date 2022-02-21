@@ -41,7 +41,6 @@ const SignUp = () => {
 			.then((response) => {
 				console.log(response);
 				setSignUpSuccess(true);
-				mutate();
 			})
 			.catch((error) => {
 				console.log(error.response);

@@ -19,8 +19,8 @@ const LogIn = () => {
 			.post('/api/users/login', { email, password }, {
 	 // withCredentials: true,
 })
-			.then(() => {
-				mutate(); 
+			.then((response) => {
+				mutate(response.data, false); 
 			})
 			.catch((error) => {
 				setLogInError(error.response?.data?.statusCode === 401);
