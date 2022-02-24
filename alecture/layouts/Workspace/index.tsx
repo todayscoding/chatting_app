@@ -44,6 +44,7 @@ const Workspace: FC = ({children}) => {
 				<Chats>Chats</Chats>
 			</WorkspaceWrapper>
 			{children}
+			<span>practice</span>
 		</div>
 	);
 };
