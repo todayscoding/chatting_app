@@ -1,3 +1,4 @@
+import Menu from '@components/Menu';
 import { 
 	Header,
 	RightMenu,
@@ -7,12 +8,14 @@ import {
 	Channels,
 	WorkspaceName,
 	MenuScroll,
-	Chats
+	Chats,
+	ProfileModal,
+	LogOutButton,
 } from '@layouts/Workspace/styles';
 import loadable from '@loadable/component'
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
-import React, { FC, useCallback }from 'react';
+import React, { FC, useState, useCallback } from 'react';
 import useSWR from 'swr';
 import { Redirect } from 'react-router-dom';
 import gravatar from 'gravatar';
@@ -22,6 +25,7 @@ const Channel = loadable(() => import('@pages/Channel'));
 const DirectMessage = loadable(() => import('@pages/DirectMessage'));
 
 const Workspace: FC = ({children}) => {
+	const [showUserMenu, setShowUserMenu] = useState(false);
 	const {data, error, mutate} = useSWR('/api/users', fetcher, {
 		dedupingInterval: 100000 //100초
 	});
@@ -35,6 +39,9 @@ const Workspace: FC = ({children}) => {
 		})
 	}, []);
 	
+	const onClickUserProfile = useCallback(() => {
+		setShowUserMenu((prev) => !prev);	
+	}, []);
 	if (!data) {
 		return <Redirect to="/login" />;
 	}
@@ -43,12 +50,23 @@ const Workspace: FC = ({children}) => {
 		<div>
 			<Header>
 				<RightMenu>
-					<span>
+					<span onClick={onClickUserProfile}>
 						<ProfileImg src={gravatar.url(data.email, { s: '28px', d: 'retro' })} alt={data.nickname} />
+						{showUserMenu && (
+							<Menu style={{ right: 0, top: 38 }} show={showUserMenu} onCloseModal={onClickUserProfile}>
+								<ProfileModal>
+									<img src={gravatar.url(data.email, { s: '36px', d: 'retro' })} alt={data.nickname}/>
+									<div>
+										<span id="profile-name">{data.nickname}</span>
+										<span id="profile-actice">Active</span>
+									</div>
+								</ProfileModal>
+								<LogOutButton onClick={onLogout}>로그아웃</LogOutButton>
+							</Menu>
+						)}	
 					</span>
 				</RightMenu>
 			</Header>
-			<button onClick={onLogout}>로그아웃</button>
 			<WorkspaceWrapper>
 				<Workspaces>test</Workspaces>
 				<Channels>
@@ -57,8 +75,8 @@ const Workspace: FC = ({children}) => {
 				</Channels>
 				<Chats>
 					<Switch>
-						<Route path="/workspace/channel/:channel" component={Channel} />
-			 			<Route path="/workspace/dm/:id" component={DirectMessage}/>
+						<Route path="/workspace/channel" component={Channel} />
+			 			<Route path="/workspace/dm" component={DirectMessage}/>
 					</Switch>
 				</Chats>
 			</WorkspaceWrapper>
