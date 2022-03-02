@@ -1,10 +1,10 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, CSSProperties } from 'react';
 import { CloseModalButton, CreateMenu } from './styles';
 
 interface Props { 
 	show: boolean;
-	onCloseModal: () => void;
-	style: React.CSSProperties;
+	onCloseModal: (e: any) => void;
+	style: CSSProperties;
 	closeButton?: boolean;
 }
 const Menu: FC<Props> = ({children, style, show, onCloseModal, closeButton}) => {
