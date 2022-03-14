@@ -19,7 +19,7 @@ const InviteWorkspaceModal: FC<Props> = ({ show, onCloseModal, setShowInviteWork
 	const { workspace } = useParams<{ workspace: string; }>();
 	const { data: userData } = useSWR<IUser>('/api/users', fetcher);
     const { mutate: mutateMembers } = useSWR<IChannel[]>(
-		userData ? `/api/workspaces/${workspace}/channels` : null, 	
+		userData ? `/api/workspaces/${workspace}/channels/members` : null, 	
 		fetcher,
 	);
 	const onInviteMember = useCallback((e) => {

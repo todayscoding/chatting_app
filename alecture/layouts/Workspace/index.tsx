@@ -1,3 +1,5 @@
+import DMList from '@components/DMList';
+import ChannelList from '@components/ChannelList';
 import Menu from '@components/Menu';
 import Modal from '@components/Modal';
 import CreateChannelModal from '@components/CreateChannelModal';
@@ -32,8 +34,6 @@ import useSWR from 'swr';
 import gravatar from 'gravatar';
 import { toast } from 'react-toastify';
 
- 
-
 const Channel = loadable(() => import('@pages/Channel'));
 const DirectMessage = loadable(() => import('@pages/DirectMessage'));
 
@@ -56,10 +56,14 @@ const Workspace: VFC = () => {
 		userData ? `/api/workspaces/${workspace}/channels` : null, 
 		fetcher,
 	);
+	const { data: memberData } = useSWR<IChannel[]>(
+		userData ? `/api/workspaces/${workspace}/members` : null, 	
+		fetcher,
+	);
 	
 	const onLogout = useCallback(() => {
 		axios.post('/api/users/logout', null, {
-			//withCredentials: true,
+			withCredentials: true,
 		})
 		.then(() => {
 			mutate(false, false);
@@ -117,7 +121,11 @@ const Workspace: VFC = () => {
 	}, []);
 	
 	const onClickInviteWorkspace = useCallback(() => {
-		
+		setShowInviteWorkspaceModal(true);
+	}, []);
+	
+	const onClickInviteChannel = useCallback(() => {
+		setShowInviteChannelModal(true);
 	}, []);
 	
 	if (!userData) {
@@ -141,7 +149,7 @@ const Workspace: VFC = () => {
 								</ProfileModal>
 								<LogOutButton onClick={onLogout}>로그아웃</LogOutButton>
 							</Menu>
-						)}	
+						)}
 					</span>
 				</RightMenu>
 			</Header>
@@ -161,20 +169,20 @@ const Workspace: VFC = () => {
 						<Menu show={showWorkspaceModal} onCloseModal={toggleWorkspaceModal} style={{ top: 95, left: 80 }}>
 							<WorkspaceModal>
 								<h2>Sleact</h2>
-								<button onClick={onClickInviteWorkspace}>워크스페이스에 사용자 초대<button>
+								<button onClick={onClickInviteWorkspace}>워크스페이스에 사용자 초대</button>
+								<button onClick={onClickInviteChannel}>채널에 사용자 초대</button>
 								<button onClick={onClickAddChannel}>채널만들기</button>
 								<button onClick={onLogout}>로그아웃</button>
 							</WorkspaceModal> 
 						</Menu>
-						{channelData?.map((v) => (
-							<div>{v.name}</div>
-						))}
+						{/*<ChannelList userData={userData}*/}
+						<DMList userData={userData}/>
 					</MenuScroll>
 				</Channels>
 				<Chats>
 					<Switch>
 						<Route path="/workspace/:workspace/channel/:channel" component={Channel} />
-			 			<Route path="/workspace/:workspace/dm/:id" component={DirectMessage}/>
+						<Route path="/workspace/:workspace/dm/:id" component={DirectMessage}/>
 					</Switch>
 				</Chats>
 			</WorkspaceWrapper>
