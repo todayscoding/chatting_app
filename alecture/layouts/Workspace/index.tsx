@@ -48,18 +48,12 @@ const Workspace: VFC = () => {
 	const [newUrl, onChangeNewUrl, setNewUrl] = useInput('');
 	
 	const { workspace } = useParams<{ workspace: string }>();
-	
 	const {data: userData, error, mutate } = useSWR<IUser | false>('/api/users', fetcher, {
 		dedupingInterval: 100000 //100초
 	});
-	const { data: channelData } = useSWR<IChannel[]>(
-		userData ? `/api/workspaces/${workspace}/channels` : null, 
-		fetcher,
-	);
-	const { data: memberData } = useSWR<IChannel[]>(
-		userData ? `/api/workspaces/${workspace}/members` : null, 	
-		fetcher,
-	);
+	const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher);
+	const { data: memberData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher);
+	const [socket, disconnect] = useSocket(workspace);
 	
 	const onLogout = useCallback(() => {
 		axios.post('/api/users/logout', null, {
