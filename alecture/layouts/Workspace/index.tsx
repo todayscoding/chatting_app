@@ -6,6 +6,7 @@ import CreateChannelModal from '@components/CreateChannelModal';
 import InviteWorkspaceModal from '@components/InviteWorkspaceModal';
 import InviteChannelModal from '@components/InviteChannelModal';
 import useInput from '@hooks/useInput';
+import useSocket from '@hooks/useSocket';
 import { 
 	AddButton,
 	Channels,
@@ -27,7 +28,7 @@ import { Label, Input, Button } from '@pages/SignUp/styles';
 import { IUser, IChannel } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
-import React, { VFC, useState, useCallback } from 'react';
+import React, { VFC, useState, useCallback, useEffect } from 'react';
 import { Redirect, useParams } from 'react-router';
 import { Link, Switch, Route } from 'react-router-dom';
 import useSWR from 'swr';
@@ -54,6 +55,20 @@ const Workspace: VFC = () => {
 	const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher);
 	const { data: memberData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher);
 	const [socket, disconnect] = useSocket(workspace);
+	
+	
+	useEffect(() => {
+		if (channelData && userData && socket) {
+			console.log(channelData);
+			socket.emit('login', { id: userData.id, channels: channelData.map((v) => v.id)});
+		} 
+	}, [socket, channelData, userData]);
+	useEffect(() => {
+		return () => {
+			disconnect();
+		}
+	}, [workspace, disconnect]);
+	
 	
 	const onLogout = useCallback(() => {
 		axios.post('/api/users/logout', null, {

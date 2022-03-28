@@ -16,7 +16,7 @@ const DirectMessage = () => {
 	const { data: myData } = useSWR('/api/users', fetcher);
 	const [chat, onChangeChat, setChat] = useInput('');
 	const { data: chatData, mutate: mutateChat } = useSWR<IDM[]>(
-		`/api/workspaces/${workspace}/dms/${id}/chat?perPage=20&page=1`,
+		`/api/workspaces/${workspace}/dms/${id}/chat?perPage=20&page=1`,	
 		fetcher,
 	);
 	
