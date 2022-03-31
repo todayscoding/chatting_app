@@ -78,8 +78,9 @@ const config: Configuration = {
     publicPath: '/dist/',
   },
   devServer: {
+	host: '0.0.0.0',
+	port: 3090,
    	historyApiFallback: true,
-    port: 3090,
     devMiddleware: { publicPath: '/dist/' },
     static: { directory: path.resolve(__dirname) },
 	allowedHosts: 'all',

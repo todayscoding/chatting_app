@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 import { useCallback } from 'react';
 	
-const backUrl = "http://localhost:3095";
+const backUrl = "https://sleact.run.goorm.io";
 
 const sockets: { [Key: string]: SocketIOClient.Socket } = {};
 const useSocket = (workspace?: string): [SocketIOClient.Socket | undefined, () => void] => {

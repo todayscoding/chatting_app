@@ -16,7 +16,7 @@ const DirectMessage = () => {
 	const { data: myData } = useSWR('/api/users', fetcher);
 	const [chat, onChangeChat, setChat] = useInput('');
 	const { data: chatData, mutate: mutateChat } = useSWR<IDM[]>(
-		`/api/workspaces/${workspace}/dms/${id}/chat?perPage=20&page=1`,	
+		`/api/workspaces/${workspace}/dms/${id}/chats`,	
 		fetcher,
 	);
 	
@@ -44,7 +44,7 @@ const DirectMessage = () => {
 			<img src={gravatar.url(userData.email, { s: '24px', d: 'retro' })} alt={userData.nickname} />
 			<span>{userData.nickname}</span>
 		</Header>
-		<ChatList />
+		<ChatList chatData={chatData}/>
 		<ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitForm={onSubmitForm}/>
 	</Container>
 };
