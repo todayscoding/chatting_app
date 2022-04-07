@@ -3,8 +3,11 @@ import ChatBox from '@components/ChatBox';
 import { Container, Header } from '@pages/Channel/styles';
 import useInput from '@hooks/useInput';
 import React, { useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 
 const Channel = () => {
+	const { workspace, channel } = useParams<{ workspace: string; channel: string; }>();
+	console.log(workspace, channel);
 	const [chat, onChangeChat, setChat] = useInput('');
 	const onSubmitForm = useCallback((e) => {
 		e.preventDefault();

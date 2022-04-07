@@ -69,6 +69,9 @@ const config: Configuration = {
       // eslint: {
       //   files: "./src/**/*",
       // },
+	  typescript: {
+		  memoryLimit: 5000
+		},
     }),
     new webpack.EnvironmentPlugin({ NODE_ENV: isDevelopment ? 'development' : 'production' }),
   ],
@@ -79,15 +82,16 @@ const config: Configuration = {
   },
   devServer: {
 	host: '0.0.0.0',
+	historyApiFallback: true,
 	port: 3090,
-   	historyApiFallback: true,
     devMiddleware: { publicPath: '/dist/' },
     static: { directory: path.resolve(__dirname) },
 	allowedHosts: 'all',
 	proxy: {
 		'/api/': {
-			target: 'http://localhost:3095',
+			target: 'https://0.0.0.0:3095',
 			changeOrigin: true,
+			ws: true,
 		}
 	}
   },

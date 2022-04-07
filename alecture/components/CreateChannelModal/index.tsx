@@ -1,35 +1,31 @@
 import Modal from '@components/Modal';
-import { Button, Input, Label } from '@pages/SignUp/styles';
-import React, { useCallback, VFC } from 'react';
-import axios from 'axios';
 import useInput from '@hooks/useInput';
+import { Button, Input, Label } from '@pages/SignUp/styles';
+import { IUser, IChannel } from '@typings/db';
+import fetcher from '@utils/fetcher';
+import axios from 'axios';
+import React, { useCallback, FC } from 'react';
 import { useParams } from 'react-router';
 import { toast } from 'react-toastify';
-import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
-import { IUser, IChannel } from '@typings/db';
 
 interface Props {
 	show: boolean;
 	onCloseModal: () => void;
 	setShowCreateChannelModal: (flag: boolean) => void;
 }
-const CreateChannelModal: VFC<Props> = ({ show, onCloseModal, setShowCreateChannelModal }) => {
+const CreateChannelModal: FC<Props> = ({ show, onCloseModal, setShowCreateChannelModal }) => {
+	const { workspace } = useParams<{ workspace: string; }>();
 	const [newChannel, onChangeNewChannel, setNewChannel] = useInput('');
-	const { workspace, channel } = useParams<{ workspace: string; channel: string }>();
 	
-	const {data: userData, error, mutate } = useSWR<IUser | false>(
-		'/api/users',
-		fetcher,
-		{
-			dedupingInterval: 2000, //2초
-		},
-	);
-    const { data: channelData, mutate: mutateChannel } = useSWR<IChannel[]>(
+	const { data: userData } = useSWR<IUser | false>('/api/users', fetcher);
+    const { mutate: revalidateChannel } = useSWR<IChannel[]>(
 		userData ? `/api/workspaces/${workspace}/channels` : null, 	
 		fetcher,
 	);
-	const onCreateChannel = useCallback((e) => {
+	
+	const onCreateChannel = useCallback(
+		(e) => {
 		e.preventDefault();
 		axios.post(`/api/workspaces/${workspace}/channels`, {
 			name: newChannel,
@@ -38,15 +34,16 @@ const CreateChannelModal: VFC<Props> = ({ show, onCloseModal, setShowCreateChann
 			},
 		)
 		.then(() => {
+		    revalidateChannel();
 			setShowCreateChannelModal(false);
-			mutateChannel();
 			setNewChannel('');
 		})
 		.catch((error: any) => {
 			console.dir(error);
 			toast.error(error.response?.data, { position: 'bottom-center' });
 		})
-	}, [newChannel]);
+	}, [newChannel, revalidateChannel, setNewChannel, setShowCreateChannelModal, workspace]
+	);
 	return (
 		<Modal show={show} onCloseModal={onCloseModal}>
 			<form onSubmit={onCreateChannel}>
@@ -60,4 +57,4 @@ const CreateChannelModal: VFC<Props> = ({ show, onCloseModal, setShowCreateChann
 	)
 };
 
-export default CreateChannelModal;
+export default CreateChannelModal;	

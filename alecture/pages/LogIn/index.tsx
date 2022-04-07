@@ -2,7 +2,7 @@ import useInput from '@hooks/useInput';
 import { Form, Error, Label, Input, LinkContainer, Button, Header, Success } from '@pages/SignUp/styles';
 import axios from 'axios';
 import React, { useCallback, useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 
@@ -33,7 +33,7 @@ const LogIn = () => {
 	}
 	
 	if (data) {
-		return <Redirect to="/workspace/sleact/channel/일반" />
+		return <Navigate replace to="/workspace/sleact/channel/일반" />
 	}
 	
 	return (

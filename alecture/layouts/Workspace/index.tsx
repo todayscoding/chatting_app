@@ -29,8 +29,8 @@ import { IUser, IChannel } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
 import React, { VFC, useState, useCallback, useEffect } from 'react';
-import { Redirect, useParams } from 'react-router';
-import { Link, Switch, Route } from 'react-router-dom';
+import { useParams } from 'react-router';
+import { Link, Routes, Route, Navigate } from 'react-router-dom';
 import useSWR from 'swr';
 import gravatar from 'gravatar';
 import { toast } from 'react-toastify';
@@ -138,7 +138,7 @@ const Workspace: VFC = () => {
 	}, []);
 	
 	if (!userData) {
-		return <Redirect to="/login" />;
+		return <Navigate replace to="/login" />;
 	}
 	
 	return(
@@ -189,10 +189,10 @@ const Workspace: VFC = () => {
 					</MenuScroll>
 				</Channels>
 				<Chats>
-					<Switch>
-						<Route path="/workspace/:workspace/channel/:channel" component={Channel} />
-						<Route path="/workspace/:workspace/dm/:id" component={DirectMessage}/>
-					</Switch>
+					<Routes>
+						<Route path="/channel/:channel" element={<Channel />} />
+						<Route path="/dm/:id" element={<DirectMessage />} />
+					</Routes>
 				</Chats>
 			</WorkspaceWrapper>
 			<Modal show={showCreateWorkspaceModal} onCloseModal={onCloseModal}>
@@ -217,11 +217,6 @@ const Workspace: VFC = () => {
 				show={showInviteWorkspaceModal} 
 				onCloseModal={onCloseModal} 
 				setShowInviteWorkspaceModal={setShowInviteWorkspaceModal}
-			/>
-			<InviteChannelModal 
-				show={showInviteChannelModal} 
-				onCloseModal={onCloseModal} 
-				setShowInviteChannelModal={setShowInviteChannelModal}
 			/>
 		</div>
 	);

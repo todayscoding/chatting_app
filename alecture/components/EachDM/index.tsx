@@ -28,7 +28,11 @@ const EachDM: VFC<Props> = ({ member, isOnline }) => {
   }, [mutate, location.pathname, workspace, member]);
 
   return (
-    <NavLink key={member.id} activeClassName="selected" to={`/workspace/${workspace}/dm/${member.id}`}>
+    <NavLink 
+		key={member.id}
+		className={(navigationData : any) => navigationData.isActive ? "selected" : undefined }
+		to={`/workspace/${workspace}/dm/${member.id}`}
+	>
       <i
         className={`c-icon p-channel_sidebar__presence_icon p-channel_sidebar__presence_icon--dim_enabled c-presence ${
           isOnline ? 'c-presence--active c-icon--presence-online' : 'c-icon--presence-offline'
