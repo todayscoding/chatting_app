@@ -53,7 +53,7 @@ const Workspace: VFC = () => {
 		dedupingInterval: 100000 //100초
 	});
 	const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher);
-	const { data: memberData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher);
+	const { data: memberData } = useSWR<IUser[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher);
 	const [socket, disconnect] = useSocket(workspace);
 	
 	

@@ -1,7 +1,7 @@
 import Modal from '@components/Modal';
 import useInput from '@hooks/useInput';
 import { Button, Input, Label } from '@pages/SignUp/styles';
-import { IUser } from '@typings/db';
+import { IUser, IChannel } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
 import React, { FC, useCallback } from 'react';
@@ -15,10 +15,11 @@ interface Props {
   setShowInviteChannelModal: (flag: boolean) => void;
 }
 const InviteChannelModal: FC<Props> = ({ show, onCloseModal, setShowInviteChannelModal }) => {
-  const { workspace, channel } = useParams<{ workspace: string; channel: string }>();
   const [newMember, onChangeNewMember, setNewMember] = useInput('');
+  const { workspace, channel } = useParams<{ workspace: string; channel: string }>();
+ 
   const { data: userData } = useSWR<IUser>('/api/users', fetcher);
-  const { mutate: revalidateMembers } = useSWR<IUser[]>(
+  const { mutate: revalidateMembers } = useSWR<IChannel[]>(
     userData ? `/api/workspaces/${workspace}/channels/${channel}/members` : null,
     fetcher,
   );
@@ -41,10 +42,8 @@ const InviteChannelModal: FC<Props> = ({ show, onCloseModal, setShowInviteChanne
         .catch((error) => {
           console.dir(error);
           toast.error(error.response?.data, { position: 'bottom-center' });
-        });
-    },
-    [channel, newMember, revalidateMembers, setNewMember, setShowInviteChannelModal, workspace],
-  );
+        })
+    }, [newMember]);
 
   return (
     <Modal show={show} onCloseModal={onCloseModal}>

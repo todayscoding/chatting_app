@@ -392,6 +392,7 @@ router.get(
       if (!workspace) {
         return res.status(404).send("존재하지 않는 워크스페이스입니다.");
       }
+	console.log(workspace);
       return res.json(
         await workspace.getDMs({
           where: {

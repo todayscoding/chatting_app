@@ -82,18 +82,18 @@ const config: Configuration = {
   },
   devServer: {
 	host: '0.0.0.0',
-	historyApiFallback: true,
 	port: 3090,
+	historyApiFallback: true,
     devMiddleware: { publicPath: '/dist/' },
     static: { directory: path.resolve(__dirname) },
 	allowedHosts: 'all',
 	proxy: {
 		'/api/': {
-			target: 'https://0.0.0.0:3095',
+			target: 'http://localhost:3095',
 			changeOrigin: true,
 			ws: true,
 		}
-	}
+	},
   },
 };
 
