@@ -22,7 +22,7 @@ export const MentionsTextarea = styled(MentionsInput)`
   padding: 8px 9px;
   width: 100%;
 
-  & strong {
+  & strong { //nested selector
     background: skyblue;
   }
 

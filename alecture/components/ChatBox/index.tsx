@@ -4,7 +4,7 @@ import { EachMention } from '@components/ChatBox/styles';
 import { IUser } from '@typings/db';
 import React, { useCallback, VFC, useEffect, useRef } from 'react';
 import autosize from 'autosize';
-import { Mention } from 'react-mentions';
+import { Mention, SuggestionDataItem } from 'react-mentions';
 import useSWR from 'swr';
 import { useParams } from 'react-router';
 import gravatar from 'gravatar';
