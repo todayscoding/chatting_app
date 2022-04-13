@@ -22,7 +22,7 @@ const Chat: VFC<Props> = ({ data }) => {
 			if (arr) {
 				return (
 					<Link key={match + index} to={`/workspace/${workspace}/dm/${arr[2]}`}> //console.log(arr)
-						{@arr[1]}
+						@{arr[1]}
 					</Link>
 				)
 			}

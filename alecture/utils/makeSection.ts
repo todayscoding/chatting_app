@@ -1,7 +1,7 @@
 import { IDM } from '@typings/db';
 import dayjs from 'dayjs';
 
-export default const makeSection(chatList: IDM[]) {
+export default function makeSection (chatList: IDM[]) {
 	const sections: { [key:string]: IDM[] } = {};
 	chatList.forEach((chat) => {
 		const monthDate = dayjs(chat.createdAt).format('YYYY-MM-DD');
