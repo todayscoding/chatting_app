@@ -17,6 +17,9 @@ const ChatList: FC<Props> = ({ chatSections, scrollbarRef, setSize, isEmpty, isR
 			console.log('가장위');
 			setSize((prevSize) => prevSize + 1).then(() => {
 				//스크롤 위치 유지
+				if (scrollbarRef?.current) {
+					scrollbarRef.current?.scrollTop(scrollbarRef.current?.getScrollHeight() - values.scrollHeight);
+				}
 			});
 		}
 	}, []);
