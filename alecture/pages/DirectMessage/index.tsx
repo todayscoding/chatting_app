@@ -4,6 +4,7 @@ import ChatList from '@components/ChatList';
 import fetcher from '@utils/fetcher';
 import { IUser, IChannel, IDM } from '@typings/db';
 import useInput from '@hooks/useInput';
+import useSocket from '@hooks/useSocket';
 import React, { useCallback, useRef, useEffect } from 'react';
 import { useParams } from 'react-router';
 import gravatar from 'gravatar';
@@ -22,6 +23,7 @@ const DirectMessage = () => {
 		(index) => `/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=${index + 1}`,	
 		fetcher,
 	);
+	const [socket] = useSocket(workspace);
 	// [{id: 1}, {id: 2}, {id: 3}, {id: 4}]
 	// 40 20 20
 	//45 20 20 5
@@ -57,6 +59,32 @@ const DirectMessage = () => {
 			.catch(console.error);
 		}
 	}, [chat, chatData, userData, myData, workspace, id]);
+	
+	const onMessage = useCallback((data: IDM) => {
+		if (data.SenderId === Number(id) && myData.id !== Number(id)) {
+			mutateChat((chatData) => {
+				chatData?.[0].unshift(data);
+				return chatData;
+			}, false).then(() => {
+				if (scrollbarRef.current) {
+					if (
+						scrollbarRef.current.getScrollHeight() <
+						scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
+					) {
+						console.log('scrollToBottom', scrollbarRef.current?.getValues());
+						scrollbarRef.current.scrollToBottom();
+					}
+				}
+			})
+		}
+	}, []);
+	
+	useEffect(() => {
+		socket?.on('dm', onMessage);
+		return () => {
+			socket?.off('dm', onMessage);
+		}
+	}, [socket, onMessage]);
 	
 	//로딩시 스크롤바 제일 아래로
 	useEffect(() => {
