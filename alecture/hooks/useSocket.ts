@@ -5,8 +5,6 @@ const backUrl = "https://sleact.run.goorm.io";
 
 const sockets: { [Key: string]: SocketIOClient.Socket } = {};
 const useSocket = (workspace?: string): [SocketIOClient.Socket | undefined, () => void] => {
-	io()
-	
 	const disconnect = useCallback(() => {
 		if (workspace) {
 			sockets[workspace].disconnect();

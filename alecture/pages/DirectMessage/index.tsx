@@ -61,6 +61,7 @@ const DirectMessage = () => {
 	}, [chat, chatData, userData, myData, workspace, id]);
 	
 	const onMessage = useCallback((data: IDM) => {
+		// id는 상대방 id
 		if (data.SenderId === Number(id) && myData.id !== Number(id)) {
 			mutateChat((chatData) => {
 				chatData?.[0].unshift(data);
