@@ -2,13 +2,17 @@ import ChatList from '@components/ChatList';
 import ChatBox from '@components/ChatBox';
 import { Container, Header } from '@pages/Channel/styles';
 import useInput from '@hooks/useInput';
-import React, { useCallback, useRef } from 'react';
+import useSocket from '@hooks/useSocket';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import makeSection from '@utils/makeSection';
 import useSWR from 'swr';
+import useSWRInfinite from 'swr/infinite';
+import axios from 'axios';
 import fetcher from '@utils/fetcher';
 import { IUser, IChannel, IChat } from '@typings/db';
 import Scrollbars from 'react-custom-scrollbars-2';
+import InviteWorkspaceModal from '@components/InviteWorkspaceModal';
 
 const Channel = () => {
 	const { workspace, channel } = useParams<{ workspace: string; channel: string}>();
@@ -16,7 +20,7 @@ const Channel = () => {
 	const [chat, onChangeChat, setChat] = useInput('');
 	const { data: channelData } = useSWR<IChannel>(`/api/workspaces/${workspace}/channels/${channel}`, fetcher);
 	const { data: chatData, mutate: mutateChat, setSize } = useSWRInfinite<IChat[]>(
-		(index) => `/api/workspaces/${workspace}/channels/${channel}/chats?perPage=20&page=${index + 1}`,	
+		(index : any) => `/api/workspaces/${workspace}/channels/${channel}/chats?perPage=20&page=${index + 1}`,	
 		fetcher,
 	);
 	const { data: channelMembersData } = useSWR<IUser[]>(
@@ -28,12 +32,13 @@ const Channel = () => {
 	const isReachingEnd = isEmpty || (chatData && chatData[chatData.length - 1]?.length < 20) || false;
 	const scrollbarRef = useRef<Scrollbars>(null);
 	const [showInviteChannelModal, setShowInviteChannelModal] = useState(false);
+	const [showInviteWorkspaceModal, setShowInviteWorkspaceModal] = useState(false);
 	const onSubmitForm = useCallback((e) => {
 		e.preventDefault();
 		console.log(chat);
 		if (chat?.trim() && chatData && channelData) {
 			const savedChat = chat;
-			mutateChat((prevChatData) => {
+			mutateChat((prevChatData: any) => {
 				prevChatData?.[0].unshift({
 					id: (chatData[0][0]?.id || 0) + 1,
 					content: savedChat,
@@ -61,7 +66,7 @@ const Channel = () => {
 	);
 	
 	const onMessage = useCallback((data: IChat) => {
-		if (data.Channel.name === channel && data.UserId !== myData?.id {
+		if (data.Channel.name === channel && data.UserId !== myData?.id) {
 			mutateChat((chatData) => {
 				chatData?.[0].unshift(data);
 				return chatData;
@@ -92,10 +97,6 @@ const Channel = () => {
 			scrollbarRef.current?.scrollToBottom();
 		}
 	}, [chatData]);
-	
-	const onClickInviteChannel = useCallback(() = {
-		
-	}, []);
 	
 	if (!myData) {
 		return null;
